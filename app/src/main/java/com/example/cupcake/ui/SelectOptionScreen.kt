@@ -42,16 +42,18 @@ import com.example.cupcake.ui.components.FormattedPriceLabel
 import com.example.cupcake.ui.theme.CupcakeTheme
 
 /**
- * Composable that displays the list of items as [RadioButton] options,
- * [onSelectionChanged] lambda that notifies the parent composable when a new value is selected,
- * [onCancelButtonClicked] lambda that cancels the order when user clicks cancel and
- * [onNextButtonClicked] lambda that triggers the navigation to next screen
+ * 항목 목록을 [RadioButton] 옵션으로 표시하는 컴포저블,
+ * 새 값이 선택되면 상위 컴포저블에 알리는 [onSelectionChanged] 람다
+ * [onCancelButtonClicked] 사용자가 취소를 클릭하면 주문을 취소하는 람다
+ * [onNextButtonClicked] 다음 화면으로의 탐색을 트리거하는 람다
  */
 @Composable
 fun SelectOptionScreen(
     subtotal: String,
     options: List<String>,
     onSelectionChanged: (String) -> Unit = {},
+    onCancelButtonClicked: () -> Unit = {},
+    onNextButtonClicked: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     var selectedValue by rememberSaveable { mutableStateOf("") }
@@ -105,7 +107,7 @@ fun SelectOptionScreen(
         ) {
             OutlinedButton(
                 modifier = Modifier.weight(1f),
-                onClick = {}
+                onClick = onCancelButtonClicked
             ) {
                 Text(stringResource(R.string.cancel))
             }
@@ -113,7 +115,7 @@ fun SelectOptionScreen(
                 modifier = Modifier.weight(1f),
                 // the button is enabled when the user makes a selection
                 enabled = selectedValue.isNotEmpty(),
-                onClick = {}
+                onClick = onNextButtonClicked
             ) {
                 Text(stringResource(R.string.next))
             }
@@ -121,14 +123,17 @@ fun SelectOptionScreen(
     }
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 fun SelectOptionPreview() {
     CupcakeTheme {
         SelectOptionScreen(
+            modifier = Modifier.fillMaxHeight(),
             subtotal = "299.99",
             options = listOf("Option 1", "Option 2", "Option 3", "Option 4"),
-            modifier = Modifier.fillMaxHeight()
+            onSelectionChanged = {},
+            onNextButtonClicked = {},
+            onCancelButtonClicked = {}
         )
     }
 }
